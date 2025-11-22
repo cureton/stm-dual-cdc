@@ -3,6 +3,8 @@
 #include <libopencm3/usb/usbstd.h>
 #include <libopencm3/usb/cdc.h>
 
+#include <libopencm3/stm32/desig.h> // For getting device uniq id -> usb serial
+
 #include "usb_descriptors.h"
 
 /* --------------------------------------------------------------------------
@@ -285,10 +287,18 @@ const struct usb_config_descriptor config_descriptor = {
 /* --------------------------------------------------------------------------
  * Strings
  * -------------------------------------------------------------------------- */
+
+/*  Space to populate STM32 uniw ID into as hex */
+#define SERIAL_BUFFER_LEN = 25  /* Max 126 chars */
+
+static char usb_serial[25] = "STM32 Unique ID";
+
+
+
 const char *usb_strings[] = {
     "Your Manufacturer",        /* 1 */
     "STM32F411 Dual CDC",       /* 2 */
-    "123456789ABC",             /* 3 */
+    usb_serial,                /* 3 */  // The hexidecimal equivilent of the device unique ID registers
 };
 
 /* --------------------------------------------------------------------------
@@ -336,6 +346,33 @@ cdc_control_request(usbd_device *dev,
         return USBD_REQ_NEXT_CALLBACK;
     }
 }
+
+
+static void word_to_hex(uint32_t w, char *dst)
+{
+    for (int i = 0; i < 8; i++) {
+        uint8_t nib = (w >> 28) & 0xF;
+        w <<= 4;
+        dst[i] = (nib < 10) ? ('0' + nib) : ('A' + (nib - 10));
+    }
+}
+
+/* Copy STM32 uniqie id into serial localtion  */
+void usb_set_unique_serial() 
+{
+    uint32_t uid[3];
+
+    /* Get pointer to uniq id rehister  from libopencm3*/
+    desig_get_unique_id(uid); 
+    
+    word_to_hex(uid[2], &usb_serial[0]);
+    word_to_hex(uid[1], &usb_serial[8]);
+    word_to_hex(uid[0], &usb_serial[16]);
+
+    usb_serial[24] = '\0';
+}
+
+
 
 /* Simple echo callbacks for each CDC data OUT EP */
 

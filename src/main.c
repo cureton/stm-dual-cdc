@@ -77,6 +77,8 @@ int main(void)
 {
     clock_setup();
     gpio_setup();
+
+    usb_set_unique_serial();
     usb_setup();
 
     while (1) {
