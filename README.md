@@ -2,8 +2,7 @@
 
 This repository contains a **minimal, reference implementation of a dual USB CDC (ACM) device** for the **STM32F4 series**, specifically targeting the **WeAct STM32F411 “Black Pill” (25 MHz HSE)** board.
 
-The project is intended as a **known-good baseline** for implementing multiple CDC interfaces on STM32F4 using **libopencm3**, with explicit USB descriptors and deterministic endpoint mapping.
-
+The project is intended as a **known-good baseline** for implementing multiple CDC interfaces on STM32F4 using **libopencm3**
 ---
 
 ## Target Hardware
@@ -13,28 +12,12 @@ The project is intended as a **known-good baseline** for implementing multiple C
 - **Clock:** External 25 MHz crystal (HSE)  
 - **Board:** WeAct STM32F411 Black Pill (25 MHz variant)
 
-This project assumes:
-- OTG_FS peripheral
-- External 25 MHz HSE
-- No external VBUS sensing (self-powered or fixed-power designs)
-
 ### WeAct Black Pill Reference
 
 Official WeAct STM32F411 Black Pill repository:  
 https://github.com/WeActStudio/WeActStudio.STM32F411CEU6
 
 ---
-
-## Repository Layout
-
-stm32-dual-cdc/
-├── libopencm3/      (git submodule)
-├── src/             (application source)
-├── Makefile
-└── README.md
-
----
-
 ## Checkout (Including Submodules)
 
 This project uses **libopencm3 as a git submodule**.
